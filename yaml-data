@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo "hostname: ${NAME}"
+echo "domainname: ${DOMAIN}"
+cat data.yaml

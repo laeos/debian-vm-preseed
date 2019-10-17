@@ -1,0 +1,20 @@
+#!/bin/sh
+
+for f in $@ ;
+do
+    # Extract data from templates and remove text, error, title
+    # and note data types.
+    sed '/^Indices-.*\.UTF-8/d' $f                          \
+    | sed '/^Choices-.*\.UTF-8/d'                           \
+    | awk '/^Template:/,/-.*\.UTF-8:/'                      \
+    | awk '!/-.*\.UTF-8:/'                                  \
+    | sed '/^Template:/{x;p;x;}'                            \
+    | sed ':a $!N;s/\nType: text/ Type: text/;ta P;D'       \
+    | sed '/Type: text/,/^$/d'                              \
+    | sed ':a $!N;s/\nType: error/ Type: error/;ta P;D'     \
+    | sed '/Type: error/,/^$/d'                             \
+    | sed ':a $!N;s/\nType: title/ Type: title/;ta P;D'     \
+    | sed '/Type: title/,/^$/d'                             \
+    | sed ':a $!N;s/\nType: note/ Type: note/;ta P;D'       \
+    | sed '/Type: note/,/^$/d'
+done

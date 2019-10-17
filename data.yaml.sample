@@ -1,0 +1,9 @@
+relayhost: gatekeeper.avalon.fnordsoft.com
+krbrelm: fnordsoft.com
+krbserver: krb
+roothash: $x$xxxxxxx
+users:
+    - fullname: Rex
+      username: rex
+      passwd: $x$xxxxxxxxx
+      uid: 1234
