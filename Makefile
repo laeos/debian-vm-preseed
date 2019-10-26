@@ -3,12 +3,13 @@ NAME   ?= default
 DOMAIN ?= avalon.fnordsoft.com
 IMAGES ?= /home/libvirt/images
 PKG    ?= nullmailer
+FROM   ?= default
 
 export NAME DOMAIN IMAGES
 
 .PHONY: default
 default:
-	@echo "you can preseed, udebpkgs, clean, build NAME=, extract PKG=, destroy NAME="
+	@echo "you can preseed, udebpkgs, clean, build NAME=, extract PKG=, destroy NAME=, clone FROM= TO="
 
 
 .PHONY: build
@@ -78,4 +79,14 @@ tmp/$(PKG).template:
 	(cd tmp && apt-extracttemplates -t . $(PKG)*.deb)
 	(cd tmp && rm $(PKG)*.config.*)
 	./extract-questions tmp/$(PKG)*.template.* > tmp/$(PKG).template
+
+
+.PHONY: clone
+clone:
+ifeq ($(strip $(TO)),)
+	@echo "make clone FROM=$(FROM) TO="
+else
+	sudo virt-clone --original $(FROM) --name $(TO) --file=$(IMAGES)/$(TO).qcow2
+	sudo virt-sysprep -d $(TO) --hostname $(TO) --enable net-hostname,net-hwaddr,kerberos-data,customize,dhcp-client-state,logfiles,machine-id
+endif
 
