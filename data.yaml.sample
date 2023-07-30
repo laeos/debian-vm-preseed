@@ -1,3 +1,4 @@
+proxy: http://superfund.avalon.fnordsoft.com:3128/
 relayhost: gatekeeper.avalon.fnordsoft.com
 krbrelm: fnordsoft.com
 krbserver: krb

@@ -19,15 +19,16 @@ $(IMAGES)/$(NAME).qcow:
 	$(MAKE) preseed NAME=$(NAME)
 	sudo virt-install \
 		--connect qemu:///system \
+		--virt-type kvm \
 		--name $(NAME) \
 		--ram 2048 \
 		--vcpus 2 \
 		--cpu host \
-		--os-type linux \
-		--os-variant debian10 \
-		--disk path=/home/libvirt/images/$(NAME).qcow2,size=20 \
+		--os-variant debian11 \
+		--disk path=/home/libvirt/images/$(NAME).qcow2,size=16 \
 		--memballoon virtio \
 		--network bridge=br1,model=virtio \
+		--tpm default \
 		--graphics none  \
 		--console pty,target_type=serial \
 		--extra-args 'console=ttyS0,115200n8 serial auto=true hostname="$(NAME)" domain="$(DOMAIN)"' \
@@ -38,7 +39,8 @@ $(IMAGES)/$(NAME).qcow:
 		--serial pty \
 		--rng /dev/random \
 		--controller usb,model=none \
-		--filesystem /home,sharedhome
+		--filesystem /shared,shared
+
 
 .PHONY: preseed
 preseed:
@@ -48,6 +50,7 @@ preseed:
 	diff -u1 preseed.cfg.mustache tmp/preseed.cfg || exit 0
 	diff -u1 postinst.sh.mustache tmp/postinst.sh || exit 0
 	debconf-set-selections  -c tmp/preseed.cfg
+
 
 .PHONY: udebpkgs
 udebpkgs:

@@ -7,23 +7,17 @@ export PATH="$PATH:/usr/sbin"
 echo "let g:skip_defaults_vim = 1" >> /etc/vim/vimrc.local
 update-alternatives --set vi /usr/bin/vim.nox
 
-# Setup shared home mount
+# stuff i don't ever care about
+apt purge -y vim-tiny tasksel tasksel-data libusb-1.0-0 discover-data
+
+# Setup shared mount
 mkdir /shared 
-echo "sharedhome /shared 9p rw,relatime,access=client,trans=virtio 0 0" >> /etc/fstab
+echo "shared /shared 9p rw,relatime,access=client,trans=virtio 0 0" >> /etc/fstab
 
 # ensure 9p is preloaded otherwise mount will fail at boot
 for m in 9p 9pnet 9pnet_virtio ; do
     echo $m >> /etc/initramfs-tools/modules
 done
 /usr/sbin/update-initramfs -u
-
-# postgres, sometimes i want the latest.
-echo "deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main" > /etc/apt/sources.list.d/pgdg.list
-wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
-
-# make sure its easy to install latest nodejs
-echo "deb https://deb.nodesource.com/node_12.x buster main" | tee /etc/apt/sources.list.d/nodesource.list
-echo "deb-src https://deb.nodesource.com/node_12.x buster main" | tee -a /etc/apt/sources.list.d/nodesource.list
-curl -sSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
 
 echo "\n*** GO AWAY ***\n" > /etc/motd
